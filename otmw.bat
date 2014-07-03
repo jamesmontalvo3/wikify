@@ -1,1 +1,2 @@
-php c:\xampp\php\otmw.php
+@ECHO OFF
+php "%~dp0otmw.php" %*
