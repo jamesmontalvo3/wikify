@@ -157,7 +157,7 @@ for($i=1; $i<$file_arg_index; $i++) {
 $file = trim( $argv[$file_arg_index] );
 
 // if file doesn't start with a letter and a colon (i.e. a full path with drive letter) 
-if ( preg_match('/[^\s]\:/', $file) == 0 ) {
+if ( preg_match('/\w\:/', $file) == 0 ) {
 	$file = getcwd() . '/' . $file;
 }
 
