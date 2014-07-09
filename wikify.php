@@ -134,8 +134,12 @@ class PostProcess {
 $keepfiles = false;
 
 
+if (file_exists(__DIR__ . '/config.json')) {
+	$config = json_decode( file_get_contents(__DIR__ . '/config.json'))
+}
 
-$soffice = "C:/Program Files (x86)/LibreOffice 4/program/soffice.exe";
+
+$soffice = isset($config['soffice']) ? $config['soffice'] : 'soffice';
 
 if ( count($argv) < 2 ) {
 	die("please specify filename");
