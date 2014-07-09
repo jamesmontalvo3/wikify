@@ -135,7 +135,7 @@ $keepfiles = false;
 
 
 if (file_exists(__DIR__ . '/config.json')) {
-	$config = json_decode( file_get_contents(__DIR__ . '/config.json'))
+	$config = json_decode( file_get_contents(__DIR__ . '/config.json'), true );
 }
 
 
