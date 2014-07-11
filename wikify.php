@@ -161,8 +161,11 @@ for($i=1; $i<$file_arg_index; $i++) {
 
 $file = trim( $argv[$file_arg_index] );
 
+// for Windows:
 // if file doesn't start with a letter and a colon (i.e. a full path with drive letter) 
-if ( preg_match('/\w\:/', $file) == 0 ) {
+// for *nix:
+// if file doesn't start with slash
+if ( preg_match('/\w\:/', $file) == 0 || $file[0] !== '/' ) {
 	$file = getcwd() . '/' . $file;
 }
 
@@ -182,7 +185,8 @@ if (is_dir($tmp)) {
 
 mkdir($tmp);
 
-shell_exec("\"$soffice\" --headless --convert-to html:HTML -outdir \"$tmp\" \"$file\"");
+$libreOfficeCommand = "\"$soffice\" --headless --convert-to html:HTML -outdir \"$tmp\" \"$file\"";
+shell_exec($libreOfficeCommand);
 
 $html_file = $tmp . '/' . $filebase . '.html';
 $new_html_file = $tmp . '/' . $filebase . '.unicode.html';

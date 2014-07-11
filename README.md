@@ -37,6 +37,39 @@ Once the install completes (hopefully it works!), type "exit" and hit enter. The
 ### LibreOffice
 Install [LibreOffice](http://www.libreoffice.org/). Once installed you'll need to find the path to the "soffice" command. On mac it is "/Applications/LibreOffice.app/Contents/MacOS/soffice". Add this to your PATH variable or create a config.json file (see config.example.json).
 
+### Install Wikify on Mac and *nix
+Clone this repository into /usr/local (so the path to wikify.php will be /usr/local/wikify/wikify.php)
+
+```bash
+cd /usr/local
+git clone https://github.com/jamesmontalvo3/wikify
+```
+
+Make a symbolic link from /usr/local/bin/wikify to the wikify.php script.
+
+```bash
+ln -s /usr/local/wikify/wikify.php /usr/local/bin/wikify
+```
+
+Make the wikify.php script executable:
+
+```bash
+sudo chmod +x /usr/local/wikify/wikify.php
+```
+
+Try wikifying a document
+
+```bash
+cd ~/Documents
+wikify test.odt
+```
+
+If that doesn't work, do this, too:
+
+```bash
+sudo chown root wikify
+```
+
 ## Usage
 ```bash
 php /path/to/wikify.php /path/of/file.doc
