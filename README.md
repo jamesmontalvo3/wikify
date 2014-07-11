@@ -32,6 +32,12 @@ Once CPAN is installed it is time to install the HTML::WikiConverter module. Unf
 force install HTML::WikiConverter
 ```
 
+Note that in order for this to work you need to have the "make" command. To install this, install make using homebrew:
+
+```bash
+brew install make
+```
+
 Once the install completes (hopefully it works!), type "exit" and hit enter. Then in terminal type "html2wiki" to test it out.
 
 ### LibreOffice
