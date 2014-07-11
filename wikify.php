@@ -170,7 +170,8 @@ if ( preg_match('/\w\:/', $file) == 0 || $file[0] !== '/' ) {
 }
 
 $filename = basename($file);
-$filebase = explode('.', $filename)[0];
+$filebase = explode('.', $filename);
+$filebase = $filebase[0];
 
 $dir = dirname($file);
 $tmp = $dir . '/tmp';
