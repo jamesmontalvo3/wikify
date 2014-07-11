@@ -7,6 +7,7 @@ This script is way-way-way alpha. Don't use it. It relies heavily on LibreOffice
 
 ## Installation
 Wikify has three requirements:
+
 1. PHP 5.4+
 2. Perl (TBD version) with html2wiki installed from CPAN
 3. LibreOffice
