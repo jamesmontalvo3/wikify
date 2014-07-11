@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 // this was taken from my Sharepoint-to-MediaWiki repo
