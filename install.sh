@@ -3,16 +3,19 @@
 # Setup wikify on a Debian-based machine
 
 # update software
-apt-get update
+apt-get update -y
 
 # install stuff like "make"
-apt-get install build-essential
+apt-get install -y build-essential
+
+# need git
+apt-get install -y git
 
 # LibreOffice required for HTML sanitization
-apt-get install libreoffice
+apt-get install -y libreoffice
 
 # Install PHP and a bunch of modules we probably don't need
-apt-get install php5 php5-mcrypt php5-cli php5-common php5-curl php5-gd php5-json php5-readline php5-imagick php5-imap php5-intl php5-mysql php5-odbc php5-pspell php5-recode php5-sqlite php5-tidy php5-xmlrpc php5-xsl 
+apt-get install -y php5 php5-mcrypt php5-cli php5-common php5-curl php5-gd php5-json php5-readline php5-imagick php5-imap php5-intl php5-mysql php5-odbc php5-pspell php5-recode php5-sqlite php5-tidy php5-xmlrpc php5-xsl 
 
 # perl is hopefully installed at this point. Use CPAN to install some modules.
 perl -MCPAN -e 'force install HTML::WikiConverter'
