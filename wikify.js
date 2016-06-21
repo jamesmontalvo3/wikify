@@ -57,19 +57,25 @@ var Wikify = {
 				process.exit();
 				return;
 			}
+			if ( stdout.trim() == "" ) {
+				stdout = "<none>\n\n";
+			}
+			if ( stderr.trim() == "" ) {
+				stderr = "<none>\n\n";
+			}
 			console.log('soffice stdout: ' + stdout);
 			console.log('soffice stderr: ' + stderr);
 
 			fs.readFile( htmlFilePath , function (err, data) {
 				if (err) throw err;
 				html = Wikify.wingdingsToUnicode( data.toString('utf8') );
-				Wikify.getImages();
+				Wikify.manipulateDOM();
 			});
 		});
 
 	},
 
-	getImages : function () {
+	manipulateDOM : function () {
 
 		var $ = cheerio.load( html );
 
@@ -88,6 +94,13 @@ var Wikify = {
 			}
 			else {
 				console.error('Image error: ' + image.type + ' is not a supported image type');
+			}
+		});
+
+		// Strip <a> tags that don't have an href attribute (kills parsoid)
+		$('a').each(function(i,e) {
+			if ( ! $(this).attr('href') ) {
+				$(this).replaceWith( $(this).text() );
 			}
 		});
 
@@ -124,7 +137,10 @@ var Wikify = {
 					process.exit();
 					return;
 				}
-				console.log('soffice stderr: ' + stderr);
+				if ( stderr.trim() == "" ) {
+					stderr = "<none>\n\n";
+				}
+				console.log('parsoid stderr: ' + stderr);
 
 				wikitext = stdout;
 				wikitext = Wikify.wikitextPostProcess(wikitext);
