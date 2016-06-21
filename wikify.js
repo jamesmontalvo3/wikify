@@ -35,7 +35,7 @@ var Wikify = {
 						process.exit();
 					},
 					function() { // no temp directory
-						fs.mkdir( tmpdir, convertToHTML );
+						fs.mkdir( tmpdir, Wikify.convertToHTML );
 					}
 				);
 			},
@@ -59,7 +59,7 @@ var Wikify = {
 			console.log('soffice stdout: ' + stdout);
 			console.log('soffice stderr: ' + stderr);
 
-			var htmlFilePath = fs.join( tmpdir, basename + '.html' );
+			var htmlFilePath = path.join( tmpdir, basename + '.html' );
 
 			fs.readFile( htmlFilePath , function (err, data) {
 				if (err) throw err;
@@ -83,7 +83,7 @@ var Wikify = {
 		$('img').each( function(i,e) {
 			var image = Wikify.decodeBase64Image( $(this).attr('src') );
 			var imageFileName = basename + i + "." + image.extension;
-			var imageFilePath = fs.join( tmpdir, imageFileName );
+			var imageFilePath = path.join( tmpdir, imageFileName );
 			$(this).attr('src', 'File:' + imageFileName );
 
 			if ( ['png','jpg','jpeg','gif'].indexOf(image.extension) !== -1 ) {
@@ -128,7 +128,7 @@ var Wikify = {
 
 			wikitext = stdout;
 			wikitext = Wikify.wikitextPostProcess(wikitext);
-			fs.writeFile( fs.join( tmpdir, basename + '.wikitext' ), wikitext, function(err) {
+			fs.writeFile( path.join( tmpdir, basename + '.wikitext' ), wikitext, function(err) {
 				if (err) throw err;
 				console.log( "Wikitext file saved!" );
 				process.exit();
@@ -174,7 +174,7 @@ var Wikify = {
 
 			// remove single lines of bold text, where text less than 60 characters
 			{ from: "/(?:^|\n)\s*[\<u>]*(?:'''|''\s*'''|'''\s*'')\s*([^\n^']{0,60})(?:'''|''\s*'''|'''\s*'')[<\/u>]*\s*\n/i",
-				to: "\n\n" + '=== \1 ===' + "\n", // replace with level 3 heading
+				to: "\n\n" + '=== \1 ===' + "\n" }, // replace with level 3 heading
 
 			// ?
 			{ from: "/\n[^\S\r\n]+/u",
@@ -323,3 +323,5 @@ var Wikify = {
 	}
 
 };
+
+Wikify.init();
