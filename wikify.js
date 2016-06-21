@@ -1,4 +1,5 @@
 // FIXME: Check if "soffice" in path
+// FIXME: all regex in wikitextPostProcess need to be made JS style
 
 const exec = require('child_process').exec;
 var cheerio = require('cheerio'),
@@ -71,8 +72,6 @@ var Wikify = {
 
 	getImages : function () {
 
-		$initial_wiki_file = tmpdir . '/' . basename . '.wiki';
-
 		var $ = cheerio.load( html );
 		// examples
 		// $('h2.title').text('Hello there!');
@@ -102,7 +101,7 @@ var Wikify = {
 
 	},
 
-	function decodeBase64Image(dataString) {
+	decodeBase64Image: function (dataString) {
 		var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
 		response = {};
 
@@ -175,7 +174,7 @@ var Wikify = {
 
 			// remove single lines of bold text, where text less than 60 characters
 			{ from: "/(?:^|\n)\s*[\<u>]*(?:'''|''\s*'''|'''\s*'')\s*([^\n^']{0,60})(?:'''|''\s*'''|'''\s*'')[<\/u>]*\s*\n/i",
-				to: "\n\n" . '=== \1 ===' . "\n", // replace with level 3 heading
+				to: "\n\n" + '=== \1 ===' + "\n", // replace with level 3 heading
 
 			// ?
 			{ from: "/\n[^\S\r\n]+/u",
