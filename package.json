@@ -1,0 +1,28 @@
+{
+  "name": "wikify",
+  "version": "0.1.0",
+  "description": "Script to convert Microsoft Word files to MediaWiki wikitext",
+  "main": "wikify.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cheerio": ">=0.20.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jamesmontalvo3/wikify.git"
+  },
+  "keywords": [
+    "MediaWiki",
+    "Microsoft",
+    "Word",
+    "Convert"
+  ],
+  "author": "James Montalvo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jamesmontalvo3/wikify/issues"
+  },
+  "homepage": "https://github.com/jamesmontalvo3/wikify"
+}
