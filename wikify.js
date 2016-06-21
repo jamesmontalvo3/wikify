@@ -16,6 +16,7 @@ var basename = path.basename( filepath, ext );
 var dirname = path.dirname( filepath );
 var tmpdir = path.join( dirname, "tmp" );
 var html;
+var htmlFilePath = path.join( tmpdir, basename + '.html' );
 
 
 
@@ -59,12 +60,10 @@ var Wikify = {
 			console.log('soffice stdout: ' + stdout);
 			console.log('soffice stderr: ' + stderr);
 
-			var htmlFilePath = path.join( tmpdir, basename + '.html' );
-
 			fs.readFile( htmlFilePath , function (err, data) {
 				if (err) throw err;
-				html = Wikify.wingdingsToUnicode( data );
-				getImages();
+				html = Wikify.wingdingsToUnicode( data.toString('utf8') );
+				Wikify.getImages();
 			});
 		});
 
@@ -73,11 +72,6 @@ var Wikify = {
 	getImages : function () {
 
 		var $ = cheerio.load( html );
-		// examples
-		// $('h2.title').text('Hello there!');
-		// $('h2').addClass('welcome');
-		// $.html();
-
 
 		// get images like: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXoAAAF6CAIAAACYwgTHAAAdb0lEQVR4nO2dS6smNduFo772L3RiexgorSBIO2gQRRqUxgNK0yCKCh5Q3II4ceREBHEiiEPBiYITwYk4caK0fvXufJ03u6qeqlRy5866k3UNNtu2
 		$('img').each( function(i,e) {
@@ -97,7 +91,9 @@ var Wikify = {
 			}
 		});
 
-		convertToWikitext();
+		html = $.html(); // put cheerio back into text
+
+		Wikify.convertToWikitext( html );
 
 	},
 
@@ -116,24 +112,29 @@ var Wikify = {
 		return response;
 	},
 
-	convertToWikitext : function () {
+	convertToWikitext : function ( html ) {
 
-		exec("node /etc/parsoid/tests/parse.js --html2wt --inputfile=" + htmlFilePath, function (error, stdout, stderr) {
-			if (error) {
-				console.error('exec error: ' + error);
-				process.exit();
-				return;
-			}
-			console.log('soffice stderr: ' + stderr);
+		fs.writeFile( htmlFilePath, html, function(err) {
+			if (err) throw err;
+			console.log( "HTML file saved prior to wikification" );
 
-			wikitext = stdout;
-			wikitext = Wikify.wikitextPostProcess(wikitext);
-			fs.writeFile( path.join( tmpdir, basename + '.wikitext' ), wikitext, function(err) {
-				if (err) throw err;
-				console.log( "Wikitext file saved!" );
-				process.exit();
+			exec("node /etc/parsoid/tests/parse.js --html2wt --inputfile=" + htmlFilePath, function (error, stdout, stderr) {
+				if (error) {
+					console.error('exec error: ' + error);
+					process.exit();
+					return;
+				}
+				console.log('soffice stderr: ' + stderr);
+
+				wikitext = stdout;
+				wikitext = Wikify.wikitextPostProcess(wikitext);
+				fs.writeFile( path.join( tmpdir, basename + '.wikitext' ), wikitext, function(err) {
+					if (err) throw err;
+					console.log( "Wikitext file saved!" );
+					process.exit();
+				});
+
 			});
-
 		});
 
 	},
