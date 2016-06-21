@@ -49,7 +49,7 @@ var Wikify = {
 	convertToHTML : function () {
 
 		// run LibreOffice "soffice" command to convert Word to HTML
-		exec( "soffice --headless --convert-to html:HTML --outdir \"" + tmpdir + "\" \"" + filepath + "\"", (error, stdout, stderr) => {
+		exec( "soffice --headless --convert-to html:HTML --outdir \"" + tmpdir + "\" \"" + filepath + "\"", function (error, stdout, stderr) {
 			if (error) {
 				console.error('exec error: ' + error);
 				process.exit();
@@ -60,7 +60,7 @@ var Wikify = {
 
 			var htmlFilePath = fs.join( tmpdir, basename + '.html' );
 
-			fs.readFile( htmlFilePath , (err, data) => {
+			fs.readFile( htmlFilePath , function (err, data) {
 				if (err) throw err;
 				html = Wikify.wingdingsToUnicode( data );
 				getImages();
@@ -119,7 +119,7 @@ var Wikify = {
 
 	convertToWikitext : function () {
 
-		exec("node /etc/parsoid/tests/parse.js --html2wt --inputfile=" + htmlFilePath, (error, stdout, stderr) => {
+		exec("node /etc/parsoid/tests/parse.js --html2wt --inputfile=" + htmlFilePath, function (error, stdout, stderr) {
 			if (error) {
 				console.error('exec error: ' + error);
 				process.exit();
