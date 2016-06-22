@@ -1,5 +1,6 @@
 // FIXME: Check if "soffice" in path
 // FIXME: all regex in wikitextPostProcess need to be made JS style
+// FIXME: lots of "error, stdout, stderr" duplication
 
 const exec = require('child_process').exec;
 var cheerio = require('cheerio'),
@@ -51,27 +52,52 @@ var Wikify = {
 	convertToHTML : function () {
 
 		// run LibreOffice "soffice" command to convert Word to HTML
-		exec( "soffice --headless --convert-to html:HTML --outdir \"" + tmpdir + "\" \"" + filepath + "\"", function (error, stdout, stderr) {
-			if (error) {
-				console.error('exec error: ' + error);
-				process.exit();
-				return;
-			}
-			if ( stdout.trim() == "" ) {
-				stdout = "<none>\n\n";
-			}
-			if ( stderr.trim() == "" ) {
-				stderr = "<none>\n\n";
-			}
-			console.log('soffice stdout: ' + stdout);
-			console.log('soffice stderr: ' + stderr);
+		exec(
+			"soffice --headless --convert-to html:HTML --outdir \"" + tmpdir + "\" \"" + filepath + "\"",
+			function ( error, stdout, stderr ) {
+				if (error) {
+					console.error('exec soffice error: ' + error);
+					process.exit();
+					return;
+				}
+				if ( stdout.trim() == "" ) {
+					stdout = "<none>\n\n";
+				}
+				if ( stderr.trim() == "" ) {
+					stderr = "<none>\n\n";
+				}
+				console.log('soffice stdout: ' + stdout);
+				console.log('soffice stderr: ' + stderr);
 
-			fs.readFile( htmlFilePath , function (err, data) {
-				if (err) throw err;
-				html = Wikify.wingdingsToUnicode( data.toString('utf8') );
-				Wikify.manipulateDOM();
-			});
-		});
+				var tidyErr = path.join( tmpdir, "tidy.err" );
+				var tidyConf = path.join( __dirname, "tidy.conf" );
+				exec(
+					"tidy -q -config " + tidyConf + " -f " + tidyErr + " -i " + htmlFilePath + " | sed 's/ class=\"c[0-9]*\"//g' > " + htmlFilePath,
+					function ( error, stdout, stderr ) {
+						if (error) {
+							console.error('exec tidy error: ' + error);
+							process.exit();
+							return;
+						}
+						if ( stdout.trim() == "" ) {
+							stdout = "<none>\n\n";
+						}
+						if ( stderr.trim() == "" ) {
+							stderr = "<none>\n\n";
+						}
+						console.log('tidy stdout: ' + stdout);
+						console.log('tidy stderr: ' + stderr);
+
+						fs.readFile( htmlFilePath , function (err, data) {
+							if (err) throw err;
+							html = Wikify.wingdingsToUnicode( data.toString('utf8') );
+							Wikify.manipulateDOM();
+						});
+					}
+				);
+
+			}
+		);
 
 	},
 
@@ -104,7 +130,7 @@ var Wikify = {
 			}
 		});
 
-		Wikify.stripTags( ['font','div','span'] );
+		// Wikify.stripTags( ['font','div','span'] );
 
 		html = $.html(); // put cheerio back into text
 
@@ -171,7 +197,7 @@ var Wikify = {
 
 	wikitextPostProcess : function (text) {
 
-		replaces = [d
+		replaces = [
 
 			// replace HTML breaks with double newlines
 			{ from: "<br />",
@@ -182,30 +208,30 @@ var Wikify = {
 				to: "" },
 
 			// // strip trailing and leading font tags
-			// { from: "/<\/font>/i",
-			// 	to: "" },
-			// { from: "/<font[^>]*>/i",
-			// 	to: "" },
+			{ from: /<\/font>/gi,
+				to: "" },
+			{ from: /<font[^>]*>/gi,
+				to: "" },
 
 			// FIXME: how will parsoid play with this?
-			{ from: "/(\[\/INTERNAL-WIKI-LINK)(\S*)(\s+)([^\]]*)(\])/",
-				to: '[[\4]]' },
+			{ from: /(\[\/INTERNAL-WIKI-LINK)(\S*)(\s+)([^\]]*)(\])/gi,
+				to: '[[$4]]' },
 
 			// Change URL encoded spaces to regular spaces
-			{ from: "/%20/",
+			{ from: /%20/g,
 				to: " " },
 
 			// match /style="..."/ where "..."=anything except double quotes
-			{ from: '/style="[^\"]*"/i',
+			{ from: /style="[^\"]*"/gi,
 				to: "" },
 
 			// make all tables wikitables
-			{ from: '/{\|/',
+			{ from: /{\|/g,
 				to: "{| class=\"wikitable\" " },
 
 			// remove single lines of bold text, where text less than 60 characters
-			{ from: "/(?:^|\n)\s*[\<u>]*(?:'''|''\s*'''|'''\s*'')\s*([^\n^']{0,60})(?:'''|''\s*'''|'''\s*'')[<\/u>]*\s*\n/i",
-				to: "\n\n" + '=== \1 ===' + "\n" }, // replace with level 3 heading
+			{ from: /(?:^|\n)\s*[\<u>]*(?:'''|''\s*'''|'''\s*'')\s*([^\n^']{0,60})(?:'''|''\s*'''|'''\s*'')[<\/u>]*\s*\n/gi,
+				to: "\n\n=== $1 ===\n" }, // replace with level 3 heading
 
 			// ?
 			{ from: "/\n[^\S\r\n]+/u",
@@ -227,17 +253,17 @@ var Wikify = {
 			{ from: "/·/u",
 				to: '*' },
 
-			// // Strip closing and leading span tags
-			// { from: "/<\/span>/i",
-			// 	to: "" },
-			// { from: "/<span[^>]*>/i",
-			// 	to: "" },
+			// Strip closing and leading span tags
+			{ from: /<\/span>/gi,
+				to: "" },
+			{ from: /<span[^>]*>/gi,
+				to: "" },
 
-			// //  Strip closing and leading div tags
-			// { from: "/<\/div>/i",
-			// 	to: "" },
-			// { from: "/<div[^>]*>/i",
-			// 	to: "" }
+			//  Strip closing and leading div tags
+			{ from: /<\/div>/gi,
+				to: "" },
+			{ from: /<div[^>]*>/gi,
+				to: "" }
 
 		];
 
