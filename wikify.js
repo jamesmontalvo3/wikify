@@ -278,7 +278,7 @@ var Wikify = {
 				to: "" },
 
 			// beginning of lines starting in "<nowiki> </nowiki> "
-			{ from: /$<\/nowiki>\s*<\/nowiki>*+/gi,
+			{ from: /^<nowiki>\s*<\/nowiki>\s*/gmi,
 				to: "" }
 
 		];
