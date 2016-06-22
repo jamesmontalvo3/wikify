@@ -263,6 +263,22 @@ var Wikify = {
 			{ from: /<\/div>/gi,
 				to: "" },
 			{ from: /<div[^>]*>/gi,
+				to: "" },
+
+			// strip colgroup tags
+			{ from: /<\/colgroup>/gi,
+				to: "" },
+			{ from: /<colgroup[^>]*>/gi,
+				to: "" },
+
+			// strip col tags
+			{ from: /<\/col>/gi,
+				to: "" },
+			{ from: /<col[^>]*>/gi,
+				to: "" },
+
+			// beginning of lines starting in "<nowiki> </nowiki> "
+			{ from: /$<\/nowiki>\s*<\/nowiki>*+/gi,
 				to: "" }
 
 		];
