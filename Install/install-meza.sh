@@ -10,6 +10,7 @@ yum install -y libreoffice libreoffice-headless tidy
 cd /usr/local
 git clone https://github.com/jamesmontalvo3/wikify
 cd wikify
+git checkout parsoid
 
 # symlink wikify and make it executable
 ln -s ./wikify.js /usr/local/bin/wikify
