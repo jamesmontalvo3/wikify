@@ -16,7 +16,6 @@ npm install
 
 # symlink wikify and make it executable
 ln -s /usr/local/wikify/wikify.js /usr/local/bin/wikify
-chmod +x /usr/local/wikify/wikify.js
 
 echo "Setup complete. You can remove this install script now."
 echo "Do \"wikify MyWordDocument.docx\" to run wikify"
