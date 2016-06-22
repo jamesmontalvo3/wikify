@@ -12,7 +12,7 @@ git clone https://github.com/jamesmontalvo3/wikify
 cd wikify
 git checkout parsoid
 
-npm install
+/usr/local/bin/npm install
 
 # symlink wikify and make it executable
 ln -s /usr/local/wikify/wikify.js /usr/local/bin/wikify
