@@ -1,3 +1,4 @@
+#! /usr/local/bin/node
 // FIXME: Check if "soffice" in path
 // FIXME: all regex in wikitextPostProcess need to be made JS style
 // FIXME: lots of "error, stdout, stderr" duplication
