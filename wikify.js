@@ -17,7 +17,7 @@ var dirname = path.dirname( filepath );
 var tmpdir = path.join( dirname, "tmp" );
 var html;
 var htmlFilePath = path.join( tmpdir, basename + '.html' );
-
+var $;
 
 
 
@@ -77,7 +77,7 @@ var Wikify = {
 
 	manipulateDOM : function () {
 
-		var $ = cheerio.load( html );
+		$ = cheerio.load( html );
 
 		// get images like: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXoAAAF6CAIAAACYwgTHAAAdb0lEQVR4nO2dS6smNduFo772L3RiexgorSBIO2gQRRqUxgNK0yCKCh5Q3II4ceREBHEiiEPBiYITwYk4caK0fvXufJ03u6qeqlRy5866k3UNNtu2
 		$('img').each( function(i,e) {
@@ -104,6 +104,8 @@ var Wikify = {
 			}
 		});
 
+		Wikify.stripTags( ['font','div','span'] );
+
 		html = $.html(); // put cheerio back into text
 
 		Wikify.convertToWikitext( html );
@@ -123,6 +125,18 @@ var Wikify = {
 		response.data = new Buffer(matches[2], 'base64');
 
 		return response;
+	},
+
+	stripTags : function ( tags ) {
+
+		for( var i=0; i<tags.length; i++ ) {
+
+			$( tags[i] ).each( function(i,e){
+				$(this).replaceWith( $(this).text() );
+			});
+
+		}
+
 	},
 
 	convertToWikitext : function ( html ) {
@@ -157,7 +171,7 @@ var Wikify = {
 
 	wikitextPostProcess : function (text) {
 
-		replaces = [
+		replaces = [d
 
 			// replace HTML breaks with double newlines
 			{ from: "<br />",
@@ -167,11 +181,11 @@ var Wikify = {
 			{ from: "�",
 				to: "" },
 
-			// strip trailing and leading font tags
-			{ from: "/<\/font>/i",
-				to: "" },
-			{ from: "/<font[^>]*>/i",
-				to: "" },
+			// // strip trailing and leading font tags
+			// { from: "/<\/font>/i",
+			// 	to: "" },
+			// { from: "/<font[^>]*>/i",
+			// 	to: "" },
 
 			// FIXME: how will parsoid play with this?
 			{ from: "/(\[\/INTERNAL-WIKI-LINK)(\S*)(\s+)([^\]]*)(\])/",
@@ -213,17 +227,17 @@ var Wikify = {
 			{ from: "/·/u",
 				to: '*' },
 
-			// Strip closing and leading span tags
-			{ from: "/<\/span>/i",
-				to: "" },
-			{ from: "/<span[^>]*>/i",
-				to: "" },
+			// // Strip closing and leading span tags
+			// { from: "/<\/span>/i",
+			// 	to: "" },
+			// { from: "/<span[^>]*>/i",
+			// 	to: "" },
 
-			//  Strip closing and leading div tags
-			{ from: "/<\/div>/i",
-				to: "" },
-			{ from: "/<div[^>]*>/i",
-				to: "" }
+			// //  Strip closing and leading div tags
+			// { from: "/<\/div>/i",
+			// 	to: "" },
+			// { from: "/<div[^>]*>/i",
+			// 	to: "" }
 
 		];
 
