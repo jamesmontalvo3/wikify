@@ -8,6 +8,14 @@ var cheerio = require('cheerio'),
 	path = require('path'),
 	fs = require('fs');
 
+if ( ["-h","--h","-help","--help"].indexOf( process.argv[2] ) !== -1 ) {
+	console.log();
+	process.exit();
+}
+else if ( ! process.argv[2] ) {
+	console.error( "Please include a file to wikify. Example:\n  wikify MyDocument.dox");
+	process.exit();
+}
 
 // get file name from argument
 var filepath = path.join( process.cwd(), process.argv[2] );

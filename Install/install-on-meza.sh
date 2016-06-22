@@ -12,9 +12,11 @@ git clone https://github.com/jamesmontalvo3/wikify
 cd wikify
 git checkout parsoid
 
+npm install
+
 # symlink wikify and make it executable
-ln -s ./wikify.js /usr/local/bin/wikify
+ln -s /usr/local/wikify/wikify.js /usr/local/bin/wikify
 chmod +x /usr/local/wikify/wikify.js
 
 echo "Setup complete. You can remove this install script now."
-echo "Do `wikify MyWordDocument.docx` to run wikify"
+echo "Do \"wikify MyWordDocument.docx\" to run wikify"
