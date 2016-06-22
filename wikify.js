@@ -24,7 +24,7 @@ var filepath = path.join( process.cwd(), process.argv[2] );
 var ext = path.extname( filepath );
 var basename = path.basename( filepath, ext );
 var dirname = path.dirname( filepath );
-var tmpdir = path.join( dirname, "tmp" );
+var tmpdir = path.join( dirname, "wikify-" + basename );
 var html;
 var htmlFilePath = path.join( tmpdir, basename + '.html' );
 var $;
